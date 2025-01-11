@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>License Plate Recognition</title>
+  <link rel="stylesheet" href="do-an.css">
+</head>
+<body>
+  <div class="container">
+    <h1>License Plate Recognition</h1>
+    <form id="uploadForm" action="/upload" method="post" enctype="multipart/form-data">
+      <input type="file" name="image" id="imageInput" required />
+      <button type="submit">Upload Image</button>
+    </form>
+    <div id="result">
+      <h2>Detected License Plate: <span id="licensePlate">None</span></h2>
+      <img id="outputImage" src="" alt="Output" />
+    </div>
+  </div>
+
+  <script>
+    // JavaScript to handle the image upload and response
+    const form = document.getElementById('uploadForm');
+    form.onsubmit = async (e) => {
+        
+        e.preventDefault();
+        const formData = new FormData(form);
+        console.log(formData, 'formData');
+        console.log(form, 'form');
+
+      const response = await fetch('/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        document.getElementById('licensePlate').textContent = data.license_plate;
+        document.getElementById('outputImage').src = data.image_url;
+      } else {
+        alert('License plate detection failed.');
+      }
+    };
+  </script>
+</body>
+</html>
